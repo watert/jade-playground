@@ -1,0 +1,60 @@
+extends layout
+block append head
+	:coffee
+		require ["bootstrap3"]
+		require ["codemirror","app/base"], (cm,app)-> $ ->
+			dom = $("#code")
+			cm.fromTextArea dom[0],
+				mode:"text/jade"
+				lineNumbers:yes
+		require ["backbone-forms","app/base"],()-> $ ->
+			class Model extends Backbone.Model
+				schema:
+					name:"Text"
+			dom = $("#edit-form")
+			form = new Backbone.Form(model:new Model).render()
+			dom.append form.el
+			console.log form
+	:less
+		#container,#code,#preview {width:100%;max-width:none;}
+		#container {
+			.panel-heading,.panel-body,.panel-footer {
+				.panel-title { font-size:13px; }
+				padding:4px 8px;
+				.btn {margin-right:.2em;}
+			}
+			.col-md-4 {padding:8px;}
+		}
+block content
+	.navbar.navbar-default: .navbar-inner
+		a.navbar-brand Jade Playground
+	.container#container
+		.row
+			.col-md-4
+				.panel.panel-default
+					.panel-heading
+						h2.panel-title File List
+					.panel-body
+						ul.nav.nav-list
+							li: a(href="./") List
+				.panel.panel-default
+					.panel-heading
+						h2.panel-title Current Config
+					.panel-body
+						form#edit-form
+			.col-md-4
+				.panel.panel-default
+					.panel-heading
+						h2.panel-title File Content
+					.panel-body
+						textarea#code
+					.panel-footer
+						p
+							.btn.btn-default.btn-sm Run
+							.btn.btn-default.btn-sm Save
+			.col-md-4
+				.panel.panel-default
+					.panel-heading
+						h2.panel-title Preview
+					.panel-body
+						iframe#preview
